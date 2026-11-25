@@ -61,6 +61,10 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          # The runner already has the SDK; just accept licences and make sure platform-tools exist.
+          # (The action's default list includes the long-removed 'tools' package, which fails.)
+          packages: 'platform-tools'
 
       - name: Build signed release APK
         working-directory: android

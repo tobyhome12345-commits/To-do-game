@@ -96,6 +96,7 @@ async function canExact(): Promise<boolean> {
 
 let running: Promise<void> | null = null;
 let again = false;
+let askedThisSession = false;
 
 /** Make Android's pending alarms match the task data. Safe to call any time. */
 export function syncReminders(): Promise<void> {
@@ -108,10 +109,15 @@ export function syncReminders(): Promise<void> {
     do {
       again = false;
       try {
-        const perm = await LocalNotifications.checkPermissions();
+        const desired = planReminders(useData.getState().data, Date.now());
+        let perm = await LocalNotifications.checkPermissions();
+        // First task that needs a reminder (from the sheet, quick-add or an import): ask once per session.
+        if (perm.display !== 'granted' && perm.display !== 'denied' && desired.length && !askedThisSession) {
+          askedThisSession = true;
+          perm = await LocalNotifications.requestPermissions();
+        }
         if (perm.display !== 'granted') return; // nothing can be shown; we'll sync once allowed
         const exact = await canExact();
-        const desired = planReminders(useData.getState().data, Date.now());
         const { notifications } = await LocalNotifications.getPending();
         const ours = notifications.filter((n) => n.id !== TEST_ID).map((n) => ({ id: n.id, extra: n.extra }));
         const { cancel, schedule } = diffReminders(desired, ours);
