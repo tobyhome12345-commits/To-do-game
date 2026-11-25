@@ -10,6 +10,8 @@ import { EmptyState } from './ui/components/EmptyState';
 import { Snackbar } from './ui/components/Snackbar';
 import { TodayScreen } from './ui/screens/TodayScreen';
 import { useToday } from './ui/hooks';
+import { BrowseScreen } from './ui/screens/BrowseScreen';
+import { ListScreen } from './ui/screens/ListScreen';
 import { SheetHost } from './ui/sheets/SheetHost';
 
 function Placeholder({ title }: { title: string }) {
@@ -30,7 +32,7 @@ function tabScreen(tab: Tab): ReactNode {
     case 'upcoming':
       return <Placeholder title="Upcoming" />;
     case 'browse':
-      return <Placeholder title="Lists" />;
+      return <BrowseScreen />;
     case 'settings':
       return <Placeholder title="Settings" />;
   }
@@ -38,6 +40,8 @@ function tabScreen(tab: Tab): ReactNode {
 
 function routeScreen(r: Route): ReactNode {
   switch (r.kind) {
+    case 'list':
+      return <ListScreen key={r.listId} listId={r.listId} />;
     default:
       return <Placeholder title="…" />;
   }

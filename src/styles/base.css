@@ -149,8 +149,23 @@ button {
   margin-bottom: 2px;
 }
 
+.header__top {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 22px;
+  margin-bottom: 2px;
+}
+
+.header__top .header__eyebrow {
+  margin-bottom: 0;
+}
+
 .back-btn {
-  margin: 0 0 6px -8px;
+  width: 34px;
+  height: 34px;
+  margin: -6px 0 -6px -9px;
+  color: var(--accent);
 }
 
 /* ---------- Buttons ---------- */

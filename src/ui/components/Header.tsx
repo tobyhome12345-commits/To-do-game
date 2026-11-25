@@ -17,12 +17,16 @@ export function Header({ eyebrow, title, color, back, actions, search = true }: 
   return (
     <header className="header">
       <div className="header__titles">
-        {back && (
-          <button className="icon-btn back-btn" onClick={pop} aria-label="Back">
-            <ChevronLeft size={26} />
-          </button>
+        {(back || eyebrow) && (
+          <div className="header__top">
+            {back && (
+              <button className="icon-btn back-btn" onClick={pop} aria-label="Back">
+                <ChevronLeft size={24} strokeWidth={2.4} />
+              </button>
+            )}
+            {eyebrow && <div className="header__eyebrow">{eyebrow}</div>}
+          </div>
         )}
-        {eyebrow && <div className="header__eyebrow">{eyebrow}</div>}
         <h1 className="header__title">
           {color && <span className="dot" style={{ background: color }} />}
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{title}</span>
