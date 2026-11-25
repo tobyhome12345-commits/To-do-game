@@ -14,6 +14,7 @@ import { BrowseScreen } from './ui/screens/BrowseScreen';
 import { ListScreen } from './ui/screens/ListScreen';
 import { UpcomingScreen } from './ui/screens/UpcomingScreen';
 import { SmartScreen } from './ui/screens/SmartScreen';
+import { SearchScreen } from './ui/screens/SearchScreen';
 import { SheetHost } from './ui/sheets/SheetHost';
 
 function Placeholder({ title }: { title: string }) {
@@ -46,6 +47,8 @@ function routeScreen(r: Route): ReactNode {
       return <ListScreen key={r.listId} listId={r.listId} />;
     case 'smart':
       return <SmartScreen key={r.view} view={r.view} />;
+    case 'search':
+      return <SearchScreen />;
     default:
       return <Placeholder title="…" />;
   }
