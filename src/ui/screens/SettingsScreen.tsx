@@ -217,7 +217,6 @@ export function SettingsScreen() {
           <input
             ref={fileRef}
             type="file"
-            accept="application/json,.json"
             hidden
             onChange={async (e) => {
               const f = e.target.files?.[0];

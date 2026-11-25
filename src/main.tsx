@@ -41,6 +41,11 @@ async function boot() {
       <App />
     </StrictMode>,
   );
+
+  if (isNative) {
+    const { initNative } = await import('./platform/nativeInit');
+    await initNative();
+  }
 }
 
 void boot();
