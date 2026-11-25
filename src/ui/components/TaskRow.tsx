@@ -29,7 +29,7 @@ function TaskRowInner({ task: t, list, today, showDate = true, showList = true, 
 
   let due: string | null = null;
   if (t.dueDate) {
-    const showD = showDate || t.dueDate !== today;
+    const showD = showDate;
     due = [showD ? relativeDay(t.dueDate, today) : null, t.dueTime ? formatTime(t.dueTime) : null].filter(Boolean).join(', ');
   }
 

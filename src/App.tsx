@@ -12,6 +12,8 @@ import { TodayScreen } from './ui/screens/TodayScreen';
 import { useToday } from './ui/hooks';
 import { BrowseScreen } from './ui/screens/BrowseScreen';
 import { ListScreen } from './ui/screens/ListScreen';
+import { UpcomingScreen } from './ui/screens/UpcomingScreen';
+import { SmartScreen } from './ui/screens/SmartScreen';
 import { SheetHost } from './ui/sheets/SheetHost';
 
 function Placeholder({ title }: { title: string }) {
@@ -30,7 +32,7 @@ function tabScreen(tab: Tab): ReactNode {
     case 'today':
       return <TodayScreen />;
     case 'upcoming':
-      return <Placeholder title="Upcoming" />;
+      return <UpcomingScreen />;
     case 'browse':
       return <BrowseScreen />;
     case 'settings':
@@ -42,6 +44,8 @@ function routeScreen(r: Route): ReactNode {
   switch (r.kind) {
     case 'list':
       return <ListScreen key={r.listId} listId={r.listId} />;
+    case 'smart':
+      return <SmartScreen key={r.view} view={r.view} />;
     default:
       return <Placeholder title="…" />;
   }
