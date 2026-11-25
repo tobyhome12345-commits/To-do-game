@@ -1,43 +1,77 @@
 import { Plus } from 'lucide-react';
-import { useUI } from './store/ui';
+import type { ReactNode } from 'react';
+import type { Task } from './model/types';
+import { useData } from './store/store';
+import { useUI, type Route, type Tab } from './store/ui';
+import { counts } from './model/views';
 import { Header } from './ui/components/Header';
 import { TabBar } from './ui/components/TabBar';
 import { EmptyState } from './ui/components/EmptyState';
-import { longDate, todayStr } from './model/dates';
+import { Snackbar } from './ui/components/Snackbar';
+import { TodayScreen } from './ui/screens/TodayScreen';
+import { useToday } from './ui/hooks';
+
+function Placeholder({ title }: { title: string }) {
+  return (
+    <section className="screen">
+      <Header title={title} />
+      <div className="scroll">
+        <EmptyState art="🚧" title="Coming up next" />
+      </div>
+    </section>
+  );
+}
+
+function tabScreen(tab: Tab): ReactNode {
+  switch (tab) {
+    case 'today':
+      return <TodayScreen />;
+    case 'upcoming':
+      return <Placeholder title="Upcoming" />;
+    case 'browse':
+      return <Placeholder title="Lists" />;
+    case 'settings':
+      return <Placeholder title="Settings" />;
+  }
+}
+
+function routeScreen(r: Route): ReactNode {
+  switch (r.kind) {
+    default:
+      return <Placeholder title="…" />;
+  }
+}
+
+/** What a new task gets by default, depending on where you are. */
+function fabDefaults(tab: Tab, top: Route | undefined, today: string): Partial<Task> | null {
+  if (top?.kind === 'list') return { listId: top.listId };
+  if (top) return top.kind === 'search' ? null : {};
+  if (tab === 'settings') return null;
+  if (tab === 'today') return { dueDate: today };
+  return {};
+}
 
 export function App() {
   const tab = useUI((s) => s.tab);
-  const today = todayStr();
+  const stack = useUI((s) => s.stack);
+  const openSheet = useUI((s) => s.openSheet);
+  const tasks = useData((s) => s.data.tasks);
+  const snack = useData((s) => s.snack);
+  const today = useToday();
+  const top = stack[stack.length - 1];
+  const c = counts(tasks, today);
+  const fab = fabDefaults(tab, top, today);
+
   return (
     <div className="app">
-      {tab === 'today' && (
-        <section className="screen">
-          <Header eyebrow={longDate(today)} title="Today" />
-          <div className="scroll">
-            <EmptyState art="🌤️" title="Nothing due today" text="Enjoy the free time — or add something to get ahead." />
-          </div>
-        </section>
+      {top ? routeScreen(top) : tabScreen(tab)}
+      {fab && (
+        <button className={`fab ${snack ? 'fab--lifted' : ''}`} aria-label="New task" onClick={() => openSheet({ kind: 'task', draft: fab })}>
+          <Plus size={28} strokeWidth={2.6} />
+        </button>
       )}
-      {tab === 'upcoming' && (
-        <section className="screen">
-          <Header eyebrow="Next 2 weeks" title="Upcoming" />
-          <div className="scroll"><EmptyState art="🗓️" title="All clear ahead" text="Tasks with future due dates show up here." /></div>
-        </section>
-      )}
-      {tab === 'browse' && (
-        <section className="screen">
-          <Header title="Lists" />
-          <div className="scroll"><EmptyState art="🗂️" title="Your lists" text="Smart views and lists will live here." /></div>
-        </section>
-      )}
-      {tab === 'settings' && (
-        <section className="screen">
-          <Header title="Settings" search={false} />
-          <div className="scroll"><EmptyState art="⚙️" title="Settings" /></div>
-        </section>
-      )}
-      <button className="fab" aria-label="Add task"><Plus size={28} strokeWidth={2.6} /></button>
-      <TabBar />
+      <Snackbar />
+      <TabBar badges={{ today: c.today + c.overdue }} />
     </div>
   );
 }

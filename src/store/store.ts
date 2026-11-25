@@ -51,9 +51,10 @@ export interface DataState {
   deleteTask(id: ID): void;
   toggleComplete(id: ID): void;
   snooze(id: ID, minutes: number): void;
-  setOrder(id: ID, order: number): void;
+  setOrders(entries: [ID, number][]): void;
   toggleSubtask(taskId: ID, subId: ID): void;
   clearCompleted(ids: ID[]): void;
+  moveTasksToDate(ids: ID[], date: string): void;
 
   addList(p: Partial<List>): List;
   updateList(id: ID, patch: Partial<List>): void;
@@ -232,10 +233,12 @@ export const useData = create<DataState>((set, get) => {
       });
     },
 
-    setOrder(id, order) {
+    setOrders(entries) {
       transact(null, (tx) => {
-        const t = tx.task(id);
-        if (t) tx.putTask({ ...t, order, updatedAt: Date.now() });
+        for (const [id, order] of entries) {
+          const t = tx.task(id);
+          if (t && t.order !== order) tx.putTask({ ...t, order, updatedAt: Date.now() });
+        }
       });
     },
 
@@ -251,6 +254,18 @@ export const useData = create<DataState>((set, get) => {
       if (!ids.length) return;
       const undoId = transact('Clear completed', (tx) => ids.forEach((id) => tx.removeTask(id)));
       get().showSnack(`Cleared ${ids.length} completed task${ids.length === 1 ? '' : 's'}`, undoId, '🧹');
+    },
+
+    moveTasksToDate(ids, date) {
+      if (!ids.length) return;
+      const undoId = transact('Reschedule', (tx) => {
+        for (const id of ids) {
+          const t = tx.task(id);
+          if (!t) continue;
+          tx.putTask({ ...t, dueDate: date, snoozedUntil: null, repeat: t.repeat ? { ...t.repeat, anchor: date } : null, updatedAt: Date.now() });
+        }
+      });
+      get().showSnack(`Moved ${ids.length} task${ids.length === 1 ? '' : 's'} to ${relativeDay(date, todayStr()).toLowerCase()}`, undoId, '📅');
     },
 
     addList(p) {

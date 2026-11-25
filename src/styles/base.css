@@ -238,7 +238,11 @@ button {
   place-items: center;
   box-shadow: 0 10px 26px color-mix(in srgb, var(--accent) 45%, transparent), var(--shadow-1);
   z-index: 20;
-  transition: transform 160ms var(--ease-spring);
+  transition: transform 160ms var(--ease-spring), bottom 300ms var(--ease-out);
+}
+
+.fab--lifted {
+  bottom: calc(var(--tabbar-h) + var(--sab) + 84px);
 }
 
 .fab:active {
