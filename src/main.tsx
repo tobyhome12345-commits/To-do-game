@@ -4,6 +4,7 @@ import '@fontsource-variable/plus-jakarta-sans';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/tasks.css';
+import './styles/sheets.css';
 import { App } from './App';
 import { applyTheme } from './ui/theme';
 import { useData } from './store/store';

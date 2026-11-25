@@ -10,6 +10,7 @@ import { EmptyState } from './ui/components/EmptyState';
 import { Snackbar } from './ui/components/Snackbar';
 import { TodayScreen } from './ui/screens/TodayScreen';
 import { useToday } from './ui/hooks';
+import { SheetHost } from './ui/sheets/SheetHost';
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -72,6 +73,7 @@ export function App() {
       )}
       <Snackbar />
       <TabBar badges={{ today: c.today + c.overdue }} />
+      <SheetHost />
     </div>
   );
 }
