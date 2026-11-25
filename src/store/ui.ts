@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { ID, Task } from '../model/types';
+import type { ParsedBackup } from './backup';
 
 export type Tab = 'today' | 'upcoming' | 'browse' | 'settings';
 export type SmartViewId = 'overdue' | 'completed' | 'all';
@@ -14,6 +15,7 @@ export type Sheet =
   | { kind: 'list'; listId?: ID }
   | { kind: 'sort'; viewKey: string; allowManual: boolean; showListFilter: boolean }
   | { kind: 'deleteList'; listId: ID }
+  | { kind: 'import'; backup: ParsedBackup }
   | null;
 
 interface UIState {

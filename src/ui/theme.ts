@@ -14,10 +14,9 @@ export function luminance(hex: string): number {
 
 /** Black or white text, whichever reads better on `hex`. */
 export function inkFor(hex: string): string {
-  const L = luminance(hex);
-  const contrastWhite = 1.05 / (L + 0.05);
-  const contrastBlack = (L + 0.05) / 0.05;
-  return contrastWhite >= contrastBlack * 0.62 ? '#ffffff' : '#111118';
+  // Prefer white (it looks right on most bright accents); switch to dark only on genuinely light colours.
+  const contrastWhite = 1.05 / (luminance(hex) + 0.05);
+  return contrastWhite >= 2.6 ? '#ffffff' : '#111118';
 }
 
 export function resolveTheme(mode: ThemeMode): 'light' | 'dark' {

@@ -4,9 +4,7 @@ import type { Task } from './model/types';
 import { useData } from './store/store';
 import { useUI, type Route, type Tab } from './store/ui';
 import { counts } from './model/views';
-import { Header } from './ui/components/Header';
 import { TabBar } from './ui/components/TabBar';
-import { EmptyState } from './ui/components/EmptyState';
 import { Snackbar } from './ui/components/Snackbar';
 import { TodayScreen } from './ui/screens/TodayScreen';
 import { useToday } from './ui/hooks';
@@ -15,18 +13,8 @@ import { ListScreen } from './ui/screens/ListScreen';
 import { UpcomingScreen } from './ui/screens/UpcomingScreen';
 import { SmartScreen } from './ui/screens/SmartScreen';
 import { SearchScreen } from './ui/screens/SearchScreen';
+import { SettingsScreen } from './ui/screens/SettingsScreen';
 import { SheetHost } from './ui/sheets/SheetHost';
-
-function Placeholder({ title }: { title: string }) {
-  return (
-    <section className="screen">
-      <Header title={title} />
-      <div className="scroll">
-        <EmptyState art="🚧" title="Coming up next" />
-      </div>
-    </section>
-  );
-}
 
 function tabScreen(tab: Tab): ReactNode {
   switch (tab) {
@@ -37,7 +25,7 @@ function tabScreen(tab: Tab): ReactNode {
     case 'browse':
       return <BrowseScreen />;
     case 'settings':
-      return <Placeholder title="Settings" />;
+      return <SettingsScreen />;
   }
 }
 
@@ -49,8 +37,6 @@ function routeScreen(r: Route): ReactNode {
       return <SmartScreen key={r.view} view={r.view} />;
     case 'search':
       return <SearchScreen />;
-    default:
-      return <Placeholder title="…" />;
   }
 }
 

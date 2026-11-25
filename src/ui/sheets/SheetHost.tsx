@@ -2,6 +2,7 @@ import { useUI } from '../../store/ui';
 import { TaskSheet } from './TaskSheet';
 import { DeleteListSheet, ListSheet } from './ListSheet';
 import { SortSheet } from './SortSheet';
+import { ImportSheet } from './ImportSheet';
 
 export function SheetHost() {
   const sheet = useUI((s) => s.sheet);
@@ -13,6 +14,8 @@ export function SheetHost() {
       return <ListSheet key={sheet.listId ?? 'new'} listId={sheet.listId} />;
     case 'sort':
       return <SortSheet viewKey={sheet.viewKey} allowManual={sheet.allowManual} showListFilter={sheet.showListFilter} />;
+    case 'import':
+      return <ImportSheet backup={sheet.backup} />;
     case 'deleteList':
       return <DeleteListSheet listId={sheet.listId} />;
     default:
