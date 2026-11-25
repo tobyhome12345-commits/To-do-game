@@ -4,6 +4,13 @@ apply plugin: 'com.android.application'
 def envVersionCode = System.getenv("VERSION_CODE")
 def envVersionName = System.getenv("VERSION_NAME")
 
+// Release signing key (committed on purpose — see android/keystore.properties).
+def keystoreProps = new Properties()
+def keystorePropsFile = rootProject.file("keystore.properties")
+if (keystorePropsFile.exists()) {
+    keystorePropsFile.withInputStream { keystoreProps.load(it) }
+}
+
 android {
     namespace = "com.doable.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -20,8 +27,17 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            storeFile file(keystoreProps['storeFile'] ?: 'doable-release.jks')
+            storePassword keystoreProps['storePassword']
+            keyAlias keystoreProps['keyAlias']
+            keyPassword keystoreProps['keyPassword']
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
